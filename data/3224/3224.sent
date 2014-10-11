@@ -1,0 +1,46 @@
+<s> ADD NEW SUBSYSTEM </s>
+<s> ADD NEW PACKAGE </s>
+<s> ADD NEW CLASS </s>
+<s> ADD NEW METHOD </s>
+<s> ADD NEW ATTRIBUTE </s>
+<s> ADD NEW NODE </s>
+<s> ADD NEW ARTIFACT </s>
+<s> ADD NEW LINK </s>
+<s> ADD NEW INTERFACE </s>
+<s> ADD NEW USE CASE </s>
+<s> ADD NEW ACTOR </s>
+<s> ADD SUBSYSTEM </s>
+<s> ADD PACKAGE </s>
+<s> ADD CLASS </s>
+<s> ADD METHOD </s>
+<s> ADD ATTRIBUTE </s>
+<s> ADD NODE </s>
+<s> ADD ARTIFACT </s>
+<s> ADD LINK </s>
+<s> ADD INTERFACE </s>
+<s> ADD USE CASE </s>
+<s> ADD ACTOR </s>
+<s> SELECT SUBSYSTEM </s>
+<s> SELECT PACKAGE </s>
+<s> SELECT CLASS </s>
+<s> SELECT METHOD </s>
+<s> SELECT ATTRIBUTE </s>
+<s> SELECT NODE </s>
+<s> SELECT ARTIFACT </s>
+<s> SELECT LINK </s>
+<s> SELECT INTERFACE </s>
+<s> SELECT USE CASE </s>
+<s> SELECT ACTOR </s>
+<s> CLEAR SELECTION </s>
+<s> REMOVE SELECTED </s>
+<s> CLASS </s>
+<s> SUBSYSTEM </s>
+<s> PACKAGE </s>
+<s> METHOD </s>
+<s> ATTRIBUTE </s>
+<s> NODE </s>
+<s> ARTIFACT </s>
+<s> LINK </s>
+<s> INTERFACE </s>
+<s> USE CASE </s>
+<s> ACTOR </s>
