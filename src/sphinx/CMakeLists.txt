@@ -17,7 +17,11 @@ execute_process(COMMAND pkg-config --variable=modeldir pocketsphinx OUTPUT_VARIA
 STRING(REGEX REPLACE "(\r?\n)+$" "" DEFAULT_ACOUSTIC_DATA_DIR "${DEFAULT_ACOUSTIC_DATA_DIR}")
 
 # Project directory inside the PROJECT_LANG_DATA_DIR with statistical language model
-set(PROJECT_LM_DIR_NAME 3224)
+#set(PROJECT_LM_DIR_NAME default)
+set(PROJECT_LM_DIR_NAME current)
+
+#set(PROJECT_LM_FILE_EXTENSION .DMP)
+set(PROJECT_LM_FILE_EXTENSION .lm)
 
 # Dierctory with concrete acoustic model
 set(PROJECT_ACOUSTIC_DATA_DIR ${DEFAULT_ACOUSTIC_DATA_DIR}/hmm/en_US/hub4wsj_sc_8k)

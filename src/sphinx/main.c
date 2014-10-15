@@ -123,7 +123,7 @@ main (int   argc,
   g_object_set (G_OBJECT (vader), "auto-threshold",TRUE, NULL);
   g_object_set (G_OBJECT (recognizer), "hmm", PROJECT_ACOUSTIC_DATA_DIR, NULL);
   g_object_set (G_OBJECT (recognizer), "dict", PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic", NULL);
-  g_object_set (G_OBJECT (recognizer), "lm", PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".lm", NULL);
+  g_object_set (G_OBJECT (recognizer), "lm", PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION, NULL);
 
   /* we add a message handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
@@ -135,8 +135,8 @@ main (int   argc,
 
   gst_bin_add_many (GST_BIN (pipeline),
                     source, converter, resampler, vader, recognizer, sink, NULL);
-  //gst_bin_add_many (GST_BIN (pipeline),
-  //                    source, converter, resampler, vader, sink, NULL);
+  /*gst_bin_add_many (GST_BIN (pipeline),
+                      source, converter, resampler, vader, sink, NULL);*/
   /* we link the elements together */
   gst_element_link_many (source, converter,resampler, vader, recognizer, sink, NULL);
   //gst_element_link_many (source, converter,resampler, vader, sink, NULL);
