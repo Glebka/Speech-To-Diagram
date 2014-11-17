@@ -24,3 +24,18 @@ void CGstSpeechRecognizer::setLanguageModelFilePath(const std::string &path)
 {
     g_object_set( G_OBJECT( mElement ), LM_PARAM.c_str(), path.c_str(), NULL );
 }
+
+std::string CGstSpeechRecognizer::getAcousticModelDirectoryPath() const
+{
+
+}
+
+std::string CGstSpeechRecognizer::getDictionaryFilePath() const
+{
+
+}
+
+std::string CGstSpeechRecognizer::getLanguageModelFilePath() const
+{
+
+}
