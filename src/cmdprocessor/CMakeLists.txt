@@ -38,6 +38,7 @@ set(project_headers
     CGstAudioResampler.hpp
     CGstVoiceActivityDetector.hpp
     CGstSpeechRecognizer.hpp
+    CGstPipeline.hpp
 
 )
 
@@ -50,6 +51,7 @@ set(project_sources
     CGstAudioResampler.cpp
     CGstVoiceActivityDetector.cpp
     CGstSpeechRecognizer.cpp
+    CGstPipeline.cpp
     main.cpp
 
 )

@@ -1,1 +1,0 @@
-/home/gleab/Work/speech2diagram/src/cmdprocessor/build/CMakeFiles/sphinx.dir
