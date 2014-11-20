@@ -5,9 +5,14 @@ const std::string CGstSpeechRecognizer::HMM_PARAM = "hmm";
 const std::string CGstSpeechRecognizer::DICT_PARAM = "dict";
 const std::string CGstSpeechRecognizer::LM_PARAM = "lm";
 
+const std::string CGstSpeechRecognizer::PARTIAL_RESULT_EVENT = "partial_result";
+const std::string CGstSpeechRecognizer::RESULT_EVENT = "result";
+
 CGstSpeechRecognizer::CGstSpeechRecognizer()
     : CGstElement( gst_element_factory_make( ELEMENT_NAME.c_str(), NULL ) )
 {
+    g_signal_connect ( mElement, PARTIAL_RESULT_EVENT.c_str(), G_CALLBACK ( partialResultHandler ), this );
+    g_signal_connect ( mElement, RESULT_EVENT.c_str(), G_CALLBACK ( resultHandler ), this );
 }
 
 void CGstSpeechRecognizer::setAcousticModelDirectoryPath(const std::string &path)
@@ -58,4 +63,14 @@ std::string CGstSpeechRecognizer::getLanguageModelFilePath() const
     std::string result( paramValue );
 
     g_free( paramValue );
+}
+
+void CGstSpeechRecognizer::partialResultHandler(GstElement *object, gchararray arg0, gchararray arg1, gpointer data)
+{
+    g_print ( "\nPartial: %s\n", arg0 );
+}
+
+void CGstSpeechRecognizer::resultHandler(GstElement *object, gchararray arg0, gchararray arg1, gpointer data)
+{
+    g_print ( "\nResult: %s\n", arg0 );
 }

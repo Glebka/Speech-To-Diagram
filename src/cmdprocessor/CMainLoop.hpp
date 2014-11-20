@@ -7,7 +7,7 @@
 class CMainLoop
 {
 public:
-    CMainLoop( int   argc, char *argv[] );
+    CMainLoop( int argc, char *argv[] );
     ~CMainLoop();
 
     void run();

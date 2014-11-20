@@ -39,7 +39,8 @@ set(project_headers
     CGstVoiceActivityDetector.hpp
     CGstSpeechRecognizer.hpp
     CGstPipeline.hpp
-
+    CGstIterator.hpp
+    CGstFakeSink.hpp
 )
 
 set(project_sources
@@ -52,6 +53,8 @@ set(project_sources
     CGstVoiceActivityDetector.cpp
     CGstSpeechRecognizer.cpp
     CGstPipeline.cpp
+    CGstIterator.cpp
+    CGstFakeSink.cpp
     main.cpp
 
 )

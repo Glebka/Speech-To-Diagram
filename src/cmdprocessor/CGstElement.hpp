@@ -6,6 +6,7 @@
 
 class CGstElement
 {
+    friend class CGstPipeline;
 public:
     CGstElement( GstElement *el = 0 );
     virtual ~CGstElement() = 0;

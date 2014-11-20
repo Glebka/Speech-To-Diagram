@@ -2,7 +2,7 @@
 
 CGstElement::~CGstElement()
 {
-    gst_object_unref( mElement );
+    gst_object_unref( GST_OBJECT( mElement ) );
 }
 
 

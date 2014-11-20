@@ -17,8 +17,16 @@ public:
     bool isAutoThreshold();
 
 private:
+
+    static void vaderStartHandler( GstElement* object, guint64 arg0, gpointer data );
+    static void vaderStopHandler( GstElement* object, guint64 arg0, gpointer data );
+
+private:
     static const std::string ELEMENT_NAME;
     static const std::string AUTO_THRESHOLD_PARAM;
+
+    static const std::string VADER_START_EVENT;
+    static const std::string VADER_STOP_EVENT;
 };
 
 #endif // CGSTVOICEACTIVITYDETECTOR_HPP
