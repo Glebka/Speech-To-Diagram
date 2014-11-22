@@ -42,6 +42,9 @@ set(project_headers
     CGstIterator.hpp
     CGstFakeSink.hpp
     CGstPad.hpp
+    CGstTee.hpp
+    CGstQueue.hpp
+    CGstValve.hpp
 )
 
 set(project_sources
@@ -57,6 +60,9 @@ set(project_sources
     CGstIterator.cpp
     CGstFakeSink.cpp
     CGstPad.cpp
+    CGstTee.cpp
+    CGstQueue.cpp
+    CGstValve.cpp
     main.cpp
 
 )

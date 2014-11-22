@@ -25,3 +25,8 @@ bool CMainLoop::isRunning()
 {
     return g_main_loop_is_running( mLoop );
 }
+
+void CMainLoop::startTimer(  int seconds, GSourceFunc callback )
+{
+     g_timeout_add_seconds( seconds, callback, mLoop );
+}

@@ -10,6 +10,9 @@
 #include "CGstSpeechRecognizer.hpp"
 #include "CGstVoiceActivityDetector.hpp"
 #include "CGstFakeSink.hpp"
+#include "CGstTee.hpp"
+#include "CGstQueue.hpp"
+#include "CGstValve.hpp"
 
 
 
@@ -98,6 +101,59 @@ void on_vader_stop (GstElement* object,
 
 //alsasrc ! audioconvert ! audioresample ! vader name=vad auto_threshold=true ! pocketsphinx name=asr ! fakesink'
 
+
+/*static gboolean timeout_cb2 (gpointer user_data)
+{
+    pipelineEl->unlinkPair( *vaderEl, *recognizerEl );
+    pipelineEl->unlinkPair( *recognizerEl, *sinkEl );
+
+    pipelineEl->removeElement( recognizerEl );
+    delete recognizerEl;
+
+    CGstSpeechRecognizer *recognizer2 = new CGstSpeechRecognizer();
+
+    recognizer2->setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
+    recognizer2->setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
+    recognizer2->setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION );
+
+    recognizerEl2 = recognizer2;
+
+    pipelineEl->addElement( recognizerEl2 );
+
+    pipelineEl->linkPair( *vaderEl, *recognizerEl2 );
+    pipelineEl->linkPair( *recognizerEl2, *sinkEl );
+
+    recognizerEl2->setState( GST_STATE_PLAYING );
+
+    vaderEl->getSrcPad().release();
+    return TRUE;
+}
+*/
+
+CGstTee *teeObj = 0;
+
+CGstElement *qe1 = 0;
+CGstElement *rec = 0;
+
+static gboolean timeout_cb2 (gpointer user_data)
+{
+    qe1->getSrcPad().unlock();
+    rec->setState( GST_STATE_PLAYING );
+    return TRUE;
+}
+
+static gboolean timeout_cb1 (gpointer user_data)
+{
+    CMainLoop *loop = ( CMainLoop * ) user_data;
+
+    qe1->getSrcPad().lock();
+    rec->getSinkPad().sendEosEvent();
+    //rec->setState( GST_STATE_PAUSED );
+
+    loop->startTimer( 5,  timeout_cb2 );
+    return TRUE;
+}
+
 int main ( int argc, char *argv[] )
 {
     CMainLoop loop( argc, argv );
@@ -108,10 +164,14 @@ int main ( int argc, char *argv[] )
     CGstAudioConverter converter;
     CGstAudioResampler resampler;
 
+    /*CGstValve valve;
+    valveObj = &valve;*/
+
     CGstVoiceActivityDetector vader;
     vader.setAutoThreshold( true );
 
     CGstSpeechRecognizer recognizer;
+    rec = &recognizer;
 
     recognizer.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
     recognizer.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
@@ -120,21 +180,55 @@ int main ( int argc, char *argv[] )
     CGstSpeechRecognizer recognizer2;
 
     recognizer2.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
-    recognizer2.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
-    recognizer2.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION );
+    recognizer2.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" "default" "/" "default" ".dic" );
+    recognizer2.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" "default" "/" "default" ".DMP" );
 
-    CGstFakeSink sink;
+    CGstTee tee;
+    teeObj = &tee;
+
+    CGstQueue q1;
+    qe1 = &q1;
+
+    CGstQueue q2;
+
+    CGstFakeSink sink1;
+    CGstFakeSink sink2;
 
     pipeline.addElement( &source );
     pipeline.addElement( &converter );
     pipeline.addElement( &resampler );
+    //pipeline.addElement( &valve );
     pipeline.addElement( &vader );
-    pipeline.addElement( &recognizer );
-    pipeline.addElement( &sink );
+    pipeline.addElement( &tee );
 
     pipeline.linkAllElements();
 
+    pipeline.addElement( &q1 );
+    pipeline.addElement( &q2 );
+
+    pipeline.addElement( &recognizer );
+    pipeline.addElement( &recognizer2 );
+    pipeline.addElement( &sink1 );
+    pipeline.addElement( &sink2 );
+
+    tee.link( q1 );
+    tee.link( q2 );
+
+    q1.link( recognizer );
+    recognizer.link( sink1 );
+
+    q2.link( recognizer2 );
+    recognizer2.link( sink2 );
+
+    //bool result = pipeline.linkAllElements();
+
+    //pipeline.addElement( recognizer2 );
+
+    //result = vader.getSrcCopyPad().link( sink2.getSinkPad() );
+
     pipeline.start();
+
+    //loop.startTimer( 5, timeout_cb1 );
 
     loop.run();
 

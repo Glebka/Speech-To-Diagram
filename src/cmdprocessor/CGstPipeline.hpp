@@ -19,13 +19,21 @@ public:
 
     bool linkAllElements();
 
-    bool linkPair( CGstElement &first, CGstElement &second );
+    /*bool linkPair( CGstElement &first, CGstElement &second );
+    void unlinkPair( CGstElement &first, CGstElement &second );*/
 
     void start();
 
     void pause();
 
     void stop();
+
+    // CGstElement interface
+public:
+    virtual CGstPad &getSrcPad();
+    virtual CGstPad &getSinkPad();
+    virtual bool link(CGstElement &other);
+    virtual bool unlink(CGstElement &other);
 
 private:
 
@@ -35,6 +43,7 @@ private:
 
     CMainLoop &mLoop;
     std::list<CGstElement *> mElements;
+
 };
 
 #endif // CGSTPIPELINE_HPP

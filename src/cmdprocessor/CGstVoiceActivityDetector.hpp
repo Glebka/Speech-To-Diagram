@@ -6,6 +6,7 @@
 #include <string>
 
 #include "CGstElement.hpp"
+#include "CGstPad.hpp"
 
 class CGstVoiceActivityDetector : public CGstElement
 {
@@ -16,10 +17,14 @@ public:
 
     bool isAutoThreshold();
 
+    CGstPad & getSrcCopyPad();
+
 private:
 
     static void vaderStartHandler( GstElement* object, guint64 arg0, gpointer data );
     static void vaderStopHandler( GstElement* object, guint64 arg0, gpointer data );
+
+    CGstPad mSrcCopyPad;
 
 private:
     static const std::string ELEMENT_NAME;
@@ -27,6 +32,7 @@ private:
 
     static const std::string VADER_START_EVENT;
     static const std::string VADER_STOP_EVENT;
+    static const std::string VADER_SRC_COPY_PAD;
 };
 
 #endif // CGSTVOICEACTIVITYDETECTOR_HPP

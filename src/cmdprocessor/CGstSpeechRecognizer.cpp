@@ -67,10 +67,12 @@ std::string CGstSpeechRecognizer::getLanguageModelFilePath() const
 
 void CGstSpeechRecognizer::partialResultHandler(GstElement *object, gchararray arg0, gchararray arg1, gpointer data)
 {
-    g_print ( "\nPartial: %s\n", arg0 );
+    CGstSpeechRecognizer *self = ( CGstSpeechRecognizer * ) data;
+    g_print ( "\n%s->Partial: %s\n", self->getName().c_str(), arg0 );
 }
 
 void CGstSpeechRecognizer::resultHandler(GstElement *object, gchararray arg0, gchararray arg1, gpointer data)
 {
-    g_print ( "\nResult: %s\n", arg0 );
+    CGstSpeechRecognizer *self = ( CGstSpeechRecognizer * ) data;
+    g_print ( "\n%s->Result: %s\n", self->getName().c_str(), arg0 );
 }

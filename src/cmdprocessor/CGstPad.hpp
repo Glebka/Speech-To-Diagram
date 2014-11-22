@@ -7,16 +7,32 @@
 
 class CGstPad
 {
+    friend class CGstTee;
 public:
-    CGstPad( GstElement *element, bool isSrcPad );
+
+    CGstPad();
+    explicit CGstPad( GstPad *pad );
+    CGstPad( GstElement *element, gchar *name );
     ~CGstPad();
 
-    void block();
-    void release();
+    std::string getName() const;
+
+    bool isValid();
+
+    void lock();
+    void unlock();
+
+    void sendEosEvent();
+
+    bool link( CGstPad &other );
+    bool unlink( CGstPad &other );
 
 private:
     CGstPad( const CGstPad &p );
+    void prepareName();
+
     GstPad *mPad;
+    std::string mName;
 
 private:
     static const std::string SINK;

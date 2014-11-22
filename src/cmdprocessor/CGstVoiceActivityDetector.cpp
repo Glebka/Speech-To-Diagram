@@ -6,8 +6,11 @@ const std::string CGstVoiceActivityDetector::AUTO_THRESHOLD_PARAM = "auto-thresh
 const std::string CGstVoiceActivityDetector::VADER_START_EVENT = "vader-start";
 const std::string CGstVoiceActivityDetector::VADER_STOP_EVENT = "vader-stop";
 
+const std::string CGstVoiceActivityDetector::VADER_SRC_COPY_PAD = "src-copy";
+
 CGstVoiceActivityDetector::CGstVoiceActivityDetector()
     : CGstElement( gst_element_factory_make( ELEMENT_NAME.c_str(), NULL ) )
+    , mSrcCopyPad( mElement, ( gchar * )VADER_SRC_COPY_PAD.c_str() )
 {
     g_signal_connect ( mElement , VADER_START_EVENT.c_str(), G_CALLBACK ( vaderStartHandler ), this );
     g_signal_connect ( mElement, VADER_STOP_EVENT.c_str(), G_CALLBACK ( vaderStopHandler ), this );
@@ -23,6 +26,11 @@ bool CGstVoiceActivityDetector::isAutoThreshold()
     bool result = false;
     g_object_get( G_OBJECT( mElement ), AUTO_THRESHOLD_PARAM.c_str(), &result, NULL);
     return result;
+}
+
+CGstPad &CGstVoiceActivityDetector::getSrcCopyPad()
+{
+    return mSrcCopyPad;
 }
 
 void CGstVoiceActivityDetector::vaderStartHandler( GstElement *object, guint64 arg0, gpointer data )

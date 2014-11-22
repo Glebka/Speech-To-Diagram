@@ -7,8 +7,8 @@ static gboolean busHandler( GstBus *bus, GstMessage *msg, gpointer data )
   switch (GST_MESSAGE_TYPE ( msg )) {
 
     case GST_MESSAGE_EOS:
-      g_print ("End of stream\n");
-      loop->quit();
+      g_print ("\nEnd of stream\n");
+      //loop->quit();
       break;
 
     case GST_MESSAGE_ERROR: {
@@ -45,7 +45,7 @@ CGstPipeline::~CGstPipeline()
 
 bool CGstPipeline::addElement(CGstElement *element)
 {
-    bool result = gst_bin_add( GST_BIN( mElement ), element->mElement );
+    bool result = gst_bin_add( GST_BIN( mElement ), element->ref() );
 
     if ( result )
     {
@@ -57,6 +57,8 @@ bool CGstPipeline::addElement(CGstElement *element)
 
 bool CGstPipeline::removeElement(CGstElement *element)
 {
+    element->setState( GST_STATE_NULL );
+
     bool result = gst_bin_remove( GST_BIN( mElement ), element->mElement );
 
     if ( result )
@@ -82,9 +84,8 @@ bool CGstPipeline::linkAllElements()
 
         if ( isPairInitialized )
         {
-            result = gst_element_link( GST_ELEMENT( element1->mElement ),
-                              GST_ELEMENT( element2->mElement )
-            );
+            result = element1->link( *element2 );
+
             if ( !result )
             {
                 break;
@@ -104,7 +105,7 @@ bool CGstPipeline::linkAllElements()
     return result;
 }
 
-bool CGstPipeline::linkPair(CGstElement &first, CGstElement &second )
+/*bool CGstPipeline::linkPair(CGstElement &first, CGstElement &second )
 {
     bool result = gst_element_link( GST_ELEMENT( first.mElement ),
                       GST_ELEMENT( second.mElement )
@@ -112,6 +113,13 @@ bool CGstPipeline::linkPair(CGstElement &first, CGstElement &second )
 
     return result;
 }
+
+void CGstPipeline::unlinkPair(CGstElement &first, CGstElement &second )
+{
+   gst_element_unlink( GST_ELEMENT( first.mElement ),
+        GST_ELEMENT( second.mElement )
+    );
+}*/
 
 void CGstPipeline::start()
 {
@@ -135,4 +143,25 @@ void CGstPipeline::setBusHandler()
     guint bus_watch_id = gst_bus_add_watch (bus, busHandler, &mLoop);
 
     gst_object_unref ( bus );
+}
+
+
+CGstPad &CGstPipeline::getSrcPad()
+{
+    return const_cast<CGstPad &>( CGstElement::INVALID_PAD );
+}
+
+CGstPad &CGstPipeline::getSinkPad()
+{
+    return const_cast<CGstPad &>( CGstElement::INVALID_PAD );
+}
+
+bool CGstPipeline::link(CGstElement &other)
+{
+    return false;
+}
+
+bool CGstPipeline::unlink(CGstElement &other)
+{
+    return false;
 }

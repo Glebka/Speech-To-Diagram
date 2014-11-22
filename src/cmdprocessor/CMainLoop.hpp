@@ -16,6 +16,8 @@ public:
 
     bool isRunning();
 
+    void startTimer( int seconds, GSourceFunc callback );
+
 private:
     GMainLoop *mLoop;
 };
