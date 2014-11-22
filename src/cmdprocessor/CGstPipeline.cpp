@@ -17,7 +17,6 @@ static gboolean busHandler( GstBus *bus, GstMessage *msg, gpointer data )
 
       gst_message_parse_error (msg, &error, &debug);
 
-
       g_printerr ("Error: %s\n%s", error->message, debug);
       g_free (debug);
       g_error_free (error);
@@ -46,71 +45,72 @@ CGstPipeline::~CGstPipeline()
 
 bool CGstPipeline::addElement(CGstElement *element)
 {
-    return gst_bin_add( GST_BIN( mElement ), element->mElement );
+    bool result = gst_bin_add( GST_BIN( mElement ), element->mElement );
+
+    if ( result )
+    {
+        mElements.push_back( element );
+    }
+
+    return result;
 }
 
 bool CGstPipeline::removeElement(CGstElement *element)
 {
-    return gst_bin_remove( GST_BIN( mElement ), element->mElement );
+    bool result = gst_bin_remove( GST_BIN( mElement ), element->mElement );
+
+    if ( result )
+    {
+        mElements.remove( element );
+    }
+    return result;
 }
 
-bool CGstPipeline::linkElements()
+bool CGstPipeline::linkAllElements()
 {
-    GstIterator *it = gst_bin_iterate_elements( GST_BIN( mElement ) );
-    bool done = false;
     bool isPairInitialized  = false;
+    bool result = true;
 
-    gpointer item1 = 0;
-    gpointer item2 = 0;
+    GstElemPtrIter it = mElements.begin();
 
-    //g_value_unset( &item1 );
-    //g_value_unset( &item2 );
+    CGstElement *element1 = 0;
+    CGstElement *element2 = 0;
 
-    while (!done) {
-      switch (gst_iterator_next ( it, &item2 )) {
-        case GST_ITERATOR_OK:
+    while ( it != mElements.end() )
+    {
+        element2 = *it;
 
-          if ( isPairInitialized )
-          {
-              GstElement *el1 = GST_ELEMENT( item1 );
-              GstElement *el2 = GST_ELEMENT( item2 );
+        if ( isPairInitialized )
+        {
+            result = gst_element_link( GST_ELEMENT( element1->mElement ),
+                              GST_ELEMENT( element2->mElement )
+            );
+            if ( !result )
+            {
+                break;
+            }
+        }
 
-              gchar *name1 = gst_element_get_name( el1 );
-              gchar *name2 = gst_element_get_name( el2 );
-              g_print( "%s->%s\n", name1, name2 );
-              g_free( name1 );
-              g_free( name2 );
-              gst_element_link(
-                          GST_ELEMENT( item1 ) ,
-                          GST_ELEMENT( item2 )
-                          );
-          }
+        element1 = element2;
 
-          item1 = item2;
+        if ( !isPairInitialized )
+        {
+            isPairInitialized = true;
+        }
 
-          if ( !isPairInitialized )
-          {
-              isPairInitialized = true;
-          }
-
-          //g_value_reset (&item2);
-
-          break;
-        case GST_ITERATOR_RESYNC:
-          gst_iterator_resync (it);
-          break;
-        case GST_ITERATOR_ERROR:
-          done = true;
-          break;
-        case GST_ITERATOR_DONE:
-          done = true;
-          break;
-      }
+        it++;
     }
 
-    //g_value_unset (&item1);
-    //g_value_unset (&item2);
-    gst_iterator_free (it);
+    return result;
+}
+
+bool CGstPipeline::linkPair(CGstElement &first, CGstElement &second )
+{
+    bool result = gst_element_link( GST_ELEMENT( first.mElement ),
+                      GST_ELEMENT( second.mElement )
+    );
+
+    return result;
 }
 
 void CGstPipeline::start()

@@ -11,6 +11,8 @@
 #include "CGstVoiceActivityDetector.hpp"
 #include "CGstFakeSink.hpp"
 
+
+
 /*static gboolean
 bus_call (GstBus     *bus,
           GstMessage *msg,
@@ -115,16 +117,22 @@ int main ( int argc, char *argv[] )
     recognizer.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
     recognizer.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION );
 
+    CGstSpeechRecognizer recognizer2;
+
+    recognizer2.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
+    recognizer2.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
+    recognizer2.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION );
+
     CGstFakeSink sink;
 
-    pipeline.addElement( &sink );
-    pipeline.addElement( &recognizer );
-    pipeline.addElement( &vader );
-    pipeline.addElement( &resampler );
-    pipeline.addElement( &converter );
     pipeline.addElement( &source );
+    pipeline.addElement( &converter );
+    pipeline.addElement( &resampler );
+    pipeline.addElement( &vader );
+    pipeline.addElement( &recognizer );
+    pipeline.addElement( &sink );
 
-    pipeline.linkElements();
+    pipeline.linkAllElements();
 
     pipeline.start();
 

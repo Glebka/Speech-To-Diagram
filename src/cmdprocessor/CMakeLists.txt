@@ -18,7 +18,7 @@ STRING(REGEX REPLACE "(\r?\n)+$" "" DEFAULT_ACOUSTIC_DATA_DIR "${DEFAULT_ACOUSTI
 
 # Project directory inside the PROJECT_LANG_DATA_DIR with statistical language model
 #set(PROJECT_LM_DIR_NAME default)
-set(PROJECT_LM_DIR_NAME current)
+set(PROJECT_LM_DIR_NAME new)
 
 #set(PROJECT_LM_FILE_EXTENSION .DMP)
 set(PROJECT_LM_FILE_EXTENSION .lm)
@@ -41,6 +41,7 @@ set(project_headers
     CGstPipeline.hpp
     CGstIterator.hpp
     CGstFakeSink.hpp
+    CGstPad.hpp
 )
 
 set(project_sources
@@ -55,6 +56,7 @@ set(project_sources
     CGstPipeline.cpp
     CGstIterator.cpp
     CGstFakeSink.cpp
+    CGstPad.cpp
     main.cpp
 
 )

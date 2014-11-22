@@ -1,8 +1,8 @@
-#include <gst/gst.h>
+﻿#include <gst/gst.h>
 #include <glib.h>
 #include <config.h>
 
-
+// обработчик событий цепочки вцелом
 static gboolean
 bus_call (GstBus     *bus,
           GstMessage *msg,
@@ -38,40 +38,30 @@ bus_call (GstBus     *bus,
   return TRUE;
 }
 
-
-/*static void
-on_pad_added (GstElement *element,
-              GstPad     *pad,
-              gpointer    data)
-{
-  GstPad *sinkpad;
-  GstElement *decoder = (GstElement *) data;
-
-  g_print ("Dynamic pad created, linking demuxer/decoder\n");
-
-  sinkpad = gst_element_get_static_pad (decoder, "sink");
-
-  gst_pad_link (pad, sinkpad);
-
-  gst_object_unref (sinkpad);
-}*/
-
+// обработчик события partial_result
+// вызывается при появлении нового промежуточного результата распознавания
 void on_partial_result (GstElement* object,
                                           gchararray arg0,
                                           gchararray arg1,
                                           gpointer user_data)
 {
+	// вывод частично распознанной фразы на консоль
     g_print ("Partial result: %s\n", arg0);
 }
 
+// обработчик события result
+// вызывается, когда произнесенная фраза полностью распознана
 void on_result (GstElement* object,
                                   gchararray arg0,
                                   gchararray arg1,
                                   gpointer user_data)
 {
+	// вывод на консоль распознанной фразы
     g_print ("Result: %s\n", arg0);
 }
 
+// обработчик события срабатывания элемента Voice Activity Detector
+// после срабатывания элемента Voice Activity Detector аудиопоток начинает поступать на элемент pocketsphinx
 void on_vader_start (GstElement* object,
                                        guint64 arg0,
                                        gpointer user_data)
@@ -79,6 +69,9 @@ void on_vader_start (GstElement* object,
     g_print ("Vader started\n");
 }
 
+// обработчик события остановки элемента Voice Activity Detector
+// Voice Activity Detector перестает передавать аудиопоток на распознавание после того, 
+// как в микрофон перестает поступать звук, громкость которого не превышает заданный порог
 void on_vader_stop (GstElement* object,
                                       guint64 arg0,
                                       gpointer user_data)
@@ -86,66 +79,90 @@ void on_vader_stop (GstElement* object,
     g_print ("Vader stopped\n");
 }
 
-//alsasrc ! audioconvert ! audioresample ! vader name=vad auto_threshold=true ! pocketsphinx name=asr ! fakesink'
-
+// главная функция приложения
 int
 main (int   argc,
       char *argv[])
 {
+
+  // объявление указателя на цикл обработки событий
   GMainLoop *loop;
 
+  // объявление указателей на элементы цепочки GStreamer
   GstElement *pipeline, *source, *converter, *resampler, *vader, *recognizer, *sink;
   GstBus *bus;
   guint bus_watch_id;
 
-  /* Initialisation */
+  // инициализация GStreamer
   gst_init (&argc, &argv);
 
+  // создание цикла обработки событий
   loop = g_main_loop_new (NULL, FALSE);
 
 
-  /* Create gstreamer elements */
+  // создание новой цепочки и элементов цепочки
   pipeline = gst_pipeline_new ("sphinx");
+
+  // создание источника аудиопотока (задается через конфигурацию сборки)
   source   = gst_element_factory_make (AUDIO_SOURCE_PLUGIN, AUDIO_SOURCE_PLUGIN);
+
+  // создание аудиоконвертера и ресемплера
   converter  = gst_element_factory_make ("audioconvert",     "converter");
   resampler  = gst_element_factory_make ("audioresample",     "resampler");
+
+  // созадние элемента Voice Activity Detector
   vader     = gst_element_factory_make ("vader",  "vad");
+
+  // созадние элемента pocketsphinx для распознавания речи
   recognizer     = gst_element_factory_make ("pocketsphinx", "recognizer");
+
+  // создание стока
   sink     = gst_element_factory_make ("fakesink", "sink");
 
   if (!pipeline || !source || !converter || !resampler || !vader || !recognizer || !sink) {
-  //if (!pipeline || !source || !converter || !resampler || !vader || !sink) {
     g_printerr ("One element could not be created. Exiting.\n");
     return -1;
   }
 
-  /* Set up the pipeline */
+  // настройка элементов цепочки
+
+  // установка автоматического порога для Voice Activity Detector
   g_object_set (G_OBJECT (vader), "auto-threshold",TRUE, NULL);
+
+  // установка пути, по которому расположена акустическая модель языка
+  // путь указан в файле конфигурации сборки
   g_object_set (G_OBJECT (recognizer), "hmm", PROJECT_ACOUSTIC_DATA_DIR, NULL);
+
+  // установка пути к файлу фонетического словаря
+  // путь указан в файле конфигурации сборки
   g_object_set (G_OBJECT (recognizer), "dict", PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic", NULL);
+
+  // установка пути к файлу статистической языковой модели
+  // путь указан в файле конфигурации сборки
   g_object_set (G_OBJECT (recognizer), "lm", PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION, NULL);
 
-  /* we add a message handler */
+  // установка обрботчика событий цепочки вцелом
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
   bus_watch_id = gst_bus_add_watch (bus, bus_call, loop);
   gst_object_unref (bus);
 
-  /* we add all elements into the pipeline */
-  /* file-source | ogg-demuxer | vorbis-decoder | converter | alsa-output */
-
+  
+  // добавление элементов в цепочку
   gst_bin_add_many (GST_BIN (pipeline),
                     source, converter, resampler, vader, recognizer, sink, NULL);
-  /*gst_bin_add_many (GST_BIN (pipeline),
-                      source, converter, resampler, vader, sink, NULL);*/
-  /* we link the elements together */
+  
+  // связывание элементов в цепочке
   gst_element_link_many (source, converter,resampler, vader, recognizer, sink, NULL);
-  //gst_element_link_many (source, converter,resampler, vader, sink, NULL);
+  
+  // установка обработчиков событий элемента Voice Activity Detector
   g_signal_connect (vader, "vader-start", G_CALLBACK (on_vader_start), NULL);
   g_signal_connect (vader, "vader-stop", G_CALLBACK (on_vader_stop), NULL);
+
+  // установка обработчиков событий pocketsphinx
   g_signal_connect (recognizer, "partial_result", G_CALLBACK (on_partial_result), sink);
   g_signal_connect (recognizer, "result", G_CALLBACK (on_result), sink);
 
-  /* Set the pipeline to "playing" state*/
+  // запуск цепочки
   g_print ("Now playing\n");
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 

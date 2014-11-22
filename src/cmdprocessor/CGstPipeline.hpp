@@ -1,6 +1,8 @@
 #ifndef CGSTPIPELINE_HPP
 #define CGSTPIPELINE_HPP
 
+#include <list>
+
 #include "CGstElement.hpp"
 #include "CMainLoop.hpp"
 
@@ -15,7 +17,9 @@ public:
 
     bool removeElement( CGstElement *element);
 
-    bool linkElements();
+    bool linkAllElements();
+
+    bool linkPair( CGstElement &first, CGstElement &second );
 
     void start();
 
@@ -25,9 +29,12 @@ public:
 
 private:
 
+    typedef std::list<CGstElement *>::iterator GstElemPtrIter;
+
     void setBusHandler();
 
     CMainLoop &mLoop;
+    std::list<CGstElement *> mElements;
 };
 
 #endif // CGSTPIPELINE_HPP

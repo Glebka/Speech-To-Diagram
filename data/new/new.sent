@@ -1,0 +1,21 @@
+<s> ADD SUBSYSTEM </s>
+<s> ADD PACKAGE </s>
+<s> ADD CLASS </s>
+<s> ADD METHOD </s>
+<s> ADD ATTRIBUTE </s>
+<s> ADD NODE </s>
+<s> ADD ARTIFACT </s>
+<s> ADD LINK </s>
+<s> ADD INTERFACE </s>
+<s> ADD USE CASE </s>
+<s> ADD ACTOR </s>
+<s> CLEAR FOCUS </s>
+<s> CHANGE TYPE </s>
+<s> NEXT </s>
+<s> BACK </s>
+<s> HOLD </s>
+<s> REMOVE </s>
+<s> CANCEL </s>
+<s> UNDO </s>
+<s> REDO </s>
+<s> SAVE </s>

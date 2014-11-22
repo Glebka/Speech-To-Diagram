@@ -1,14 +1,3 @@
-ADD NEW SUBSYSTEM <pause>
-ADD NEW PACKAGE <pause>
-ADD NEW CLASS <pause>
-ADD NEW METHOD <pause>
-ADD NEW ATTRIBUTE <pause>
-ADD NEW NODE <pause>
-ADD NEW ARTIFACT <pause>
-ADD NEW LINK <pause>
-ADD NEW INTERFACE <pause>
-ADD NEW USE CASE <pause>
-ADD NEW ACTOR <pause>
 ADD SUBSYSTEM <pause>
 ADD PACKAGE <pause>
 ADD CLASS <pause>
@@ -20,27 +9,13 @@ ADD LINK <pause>
 ADD INTERFACE <pause>
 ADD USE CASE <pause>
 ADD ACTOR <pause>
-SELECT SUBSYSTEM <pause>
-SELECT PACKAGE <pause>
-SELECT CLASS <pause>
-SELECT METHOD <pause>
-SELECT ATTRIBUTE <pause>
-SELECT NODE <pause>
-SELECT ARTIFACT <pause>
-SELECT LINK <pause>
-SELECT INTERFACE <pause>
-SELECT USE CASE <pause>
-SELECT ACTOR <pause>
-CLEAR SELECTION <pause>
-REMOVE SELECTED <pause>
-CLASS <pause>
-SUBSYSTEM <pause>
-PACKAGE <pause>
-METHOD <pause>
-ATTRIBUTE <pause>
-NODE <pause>
-ARTIFACT <pause>
-LINK <pause>
-INTERFACE <pause>
-USE CASE <pause>
-ACTOR
+CLEAR FOCUS <pause>
+CHANGE TYPE <pause>
+NEXT <pause>
+BACK <pause>
+HOLD <pause>
+REMOVE <pause>
+CANCEL <pause>
+UNDO <pause>
+REDO <pause>
+SAVE
