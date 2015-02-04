@@ -36,14 +36,14 @@ bool CGstPad::isValid()
 
 void CGstPad::lock()
 {
-    if ( mPad )
-        gst_pad_set_blocked( mPad, true );
+    /*if ( mPad )
+        gst_pad_set_blocked( mPad, true );*/
 }
 
 void CGstPad::unlock()
 {
-    if ( mPad )
-        gst_pad_set_blocked( mPad, false );
+    /*if ( mPad )
+        gst_pad_set_blocked( mPad, false );*/
 }
 
 void CGstPad::sendEosEvent()

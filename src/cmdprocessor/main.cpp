@@ -170,7 +170,7 @@ int main ( int argc, char *argv[] )
     CGstVoiceActivityDetector vader;
     vader.setAutoThreshold( true );
 
-    CGstSpeechRecognizer recognizer;
+    /*CGstSpeechRecognizer recognizer;
     rec = &recognizer;
 
     recognizer.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
@@ -180,8 +180,8 @@ int main ( int argc, char *argv[] )
     CGstSpeechRecognizer recognizer2;
 
     recognizer2.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
-    recognizer2.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" "default" "/" "default" ".dic" );
-    recognizer2.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" "default" "/" "default" ".DMP" );
+    recognizer2.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" "sw" "/" "sw" ".dic" );
+    recognizer2.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" "sw" "/" "sw" ".lm" );
 
     CGstTee tee;
     teeObj = &tee;
@@ -191,7 +191,7 @@ int main ( int argc, char *argv[] )
 
     CGstQueue q2;
 
-    CGstFakeSink sink1;
+    CGstFakeSink sink1;*/
     CGstFakeSink sink2;
 
     pipeline.addElement( &source );
@@ -199,11 +199,12 @@ int main ( int argc, char *argv[] )
     pipeline.addElement( &resampler );
     //pipeline.addElement( &valve );
     pipeline.addElement( &vader );
-    pipeline.addElement( &tee );
+    pipeline.addElement( &sink2 );
+    //pipeline.addElement( &tee );
 
     pipeline.linkAllElements();
 
-    pipeline.addElement( &q1 );
+    /*pipeline.addElement( &q1 );
     pipeline.addElement( &q2 );
 
     pipeline.addElement( &recognizer );
@@ -224,7 +225,7 @@ int main ( int argc, char *argv[] )
 
     //pipeline.addElement( recognizer2 );
 
-    //result = vader.getSrcCopyPad().link( sink2.getSinkPad() );
+    //result = vader.getSrcCopyPad().link( sink2.getSinkPad() );*/
 
     pipeline.start();
 

@@ -4,7 +4,10 @@ project(sphinx CXX C)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GST gstreamer-0.10)
+find_package(GStreamer REQUIRED)
+find_package(GLIB COMPONENTS gobject REQUIRED)
+#pkg_check_modules(GST gstreamer-0.10)
+#pkg_check_modules(GST gstreamer-1.0)
 pkg_check_modules(SPHINX pocketsphinx)
 
 
@@ -18,7 +21,7 @@ STRING(REGEX REPLACE "(\r?\n)+$" "" DEFAULT_ACOUSTIC_DATA_DIR "${DEFAULT_ACOUSTI
 
 # Project directory inside the PROJECT_LANG_DATA_DIR with statistical language model
 #set(PROJECT_LM_DIR_NAME default)
-set(PROJECT_LM_DIR_NAME new)
+set(PROJECT_LM_DIR_NAME current)
 
 #set(PROJECT_LM_FILE_EXTENSION .DMP)
 set(PROJECT_LM_FILE_EXTENSION .lm)
@@ -74,9 +77,14 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 include_directories(SYSTEM
-    ${GST_INCLUDE_DIRS}
+    ${GLIB_INCLUDE_DIRS}
+    ${GSTREAMER_INCLUDE_DIRS}
 )
-link_directories(${GST_LIBRARY_DIRS})
+link_directories(
+    ${GSTREAMER_LIBRARIES}
+    ${GLIB_LIBRARIES}
+    ${GLIB_GOBJECT_LIBRARIES}
+)
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
@@ -88,5 +96,7 @@ add_executable(sphinx
 )
 
 target_link_libraries(sphinx
-        ${GST_LIBRARIES}
+        ${GSTREAMER_LIBRARIES}
+        ${GLIB_LIBRARIES}
+        ${GLIB_GOBJECT_LIBRARIES}
 )
