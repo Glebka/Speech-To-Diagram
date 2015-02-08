@@ -685,7 +685,9 @@ gst_vader_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
     }
     /* Handling of silence detection is done. */
     g_rec_mutex_unlock(&filter->mtx);
-
+    
+    gst_buffer_unmap( buf, &mapInfo );
+    
     /* now check if we have to send the new buffer to the internal buffer cache
      * or to the srcpad */
     if (filter->silent) {
@@ -713,8 +715,6 @@ gst_vader_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
         gst_pad_push(filter->srcpad, buf);
     }
     
-    gst_buffer_unmap( buf, &mapInfo );
-    
     return GST_FLOW_OK;
 }
 
@@ -723,34 +723,29 @@ gst_vader_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
  * initialize the plug-in itself
  * register the element factories and other features
  */
-static gboolean
+/*static gboolean
 vader_init (GstPlugin * vader)
 {
-  /* debug category for fltering log messages
-   *
-   * exchange the string 'Template vader' with your description
-   */
-  GST_DEBUG_CATEGORY_INIT (gst_vader_debug, "vader",
-      0, "Vader");
+  
 
   return gst_element_register (vader, "vader", GST_RANK_NONE,
       GST_TYPE_VADER);
-}
+}*/
 
 /* PACKAGE: this is usually set by autotools depending on some _INIT macro
  * in configure.ac and then written into and defined in config.h, but we can
  * just set it ourselves here in case someone doesn't use autotools to
  * compile this code. GST_PLUGIN_DEFINE needs PACKAGE to be defined.
  */
-#ifndef PACKAGE
+/*#ifndef PACKAGE
 #define PACKAGE "vader"
-#endif
+#endif*/
 
 /* gstreamer looks for this structure to register vaders
  *
  * exchange the string 'Template vader' with your vader description
  */
-GST_PLUGIN_DEFINE (
+/*GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     vader,
@@ -760,4 +755,4 @@ GST_PLUGIN_DEFINE (
     "LGPL",
     "Thomas <thomas@apestaart.org>, David Huggins-Daines <dhuggins@cs.cmu.edu>",
     "http://gstreamer.net/"
-)
+)*/
