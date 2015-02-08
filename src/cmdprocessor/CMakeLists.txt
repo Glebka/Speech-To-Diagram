@@ -19,15 +19,18 @@ set(PROJECT_LANG_DATA_DIR ${CMAKE_SOURCE_DIR}/../../data)
 execute_process(COMMAND pkg-config --variable=modeldir pocketsphinx OUTPUT_VARIABLE DEFAULT_ACOUSTIC_DATA_DIR)
 STRING(REGEX REPLACE "(\r?\n)+$" "" DEFAULT_ACOUSTIC_DATA_DIR "${DEFAULT_ACOUSTIC_DATA_DIR}")
 
+message(STATUS "Default acoustic model dir: ${DEFAULT_ACOUSTIC_DATA_DIR}")
+
 # Project directory inside the PROJECT_LANG_DATA_DIR with statistical language model
 #set(PROJECT_LM_DIR_NAME default)
-set(PROJECT_LM_DIR_NAME current)
+set(PROJECT_LM_DIR_NAME new)
 
 #set(PROJECT_LM_FILE_EXTENSION .DMP)
 set(PROJECT_LM_FILE_EXTENSION .lm)
 
 # Dierctory with concrete acoustic model
 set(PROJECT_ACOUSTIC_DATA_DIR ${DEFAULT_ACOUSTIC_DATA_DIR}/hmm/en_US/hub4wsj_sc_8k)
+#set(PROJECT_ACOUSTIC_DATA_DIR ${DEFAULT_ACOUSTIC_DATA_DIR}/hmm/en_US/new)
 
 # Audio source gstreamer plugin
 set(AUDIO_SOURCE_PLUGIN alsasrc)
@@ -48,6 +51,7 @@ set(project_headers
     CGstTee.hpp
     CGstQueue.hpp
     CGstValve.hpp
+    CGstWavenc.hpp
 )
 
 set(project_sources
@@ -66,6 +70,7 @@ set(project_sources
     CGstTee.cpp
     CGstQueue.cpp
     CGstValve.cpp
+    CGstWavenc.cpp
     main.cpp
 
 )

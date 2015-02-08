@@ -26,8 +26,8 @@ public:
 
 private:
 
-    static void partialResultHandler( GstElement *object, gchararray arg0, gchararray arg1, gpointer data );
-    static void resultHandler( GstElement *object, gchararray arg0, gchararray arg1, gpointer data );
+    static void partialResultHandler( GstElement *object, gchararray arg0, gchararray arg1, gint score, gpointer data );
+    static void resultHandler( GstElement *object, gchararray arg0, gchararray arg1, gint score, gpointer data );
 
 private:
     static const std::string ELEMENT_NAME;

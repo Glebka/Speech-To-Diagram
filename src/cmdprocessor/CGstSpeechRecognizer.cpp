@@ -5,7 +5,7 @@ const std::string CGstSpeechRecognizer::HMM_PARAM = "hmm";
 const std::string CGstSpeechRecognizer::DICT_PARAM = "dict";
 const std::string CGstSpeechRecognizer::LM_PARAM = "lm";
 
-const std::string CGstSpeechRecognizer::PARTIAL_RESULT_EVENT = "partial_result";
+const std::string CGstSpeechRecognizer::PARTIAL_RESULT_EVENT = "partial";
 const std::string CGstSpeechRecognizer::RESULT_EVENT = "result";
 
 CGstSpeechRecognizer::CGstSpeechRecognizer()
@@ -65,14 +65,14 @@ std::string CGstSpeechRecognizer::getLanguageModelFilePath() const
     g_free( paramValue );
 }
 
-void CGstSpeechRecognizer::partialResultHandler(GstElement *object, gchararray arg0, gchararray arg1, gpointer data)
+void CGstSpeechRecognizer::partialResultHandler(GstElement *object, gchararray arg0, gchararray arg1, gint score, gpointer data)
 {
     CGstSpeechRecognizer *self = ( CGstSpeechRecognizer * ) data;
-    g_print ( "\n%s->Partial: %s\n", self->getName().c_str(), arg0 );
+    g_print ( "\n%s->Partial: %s; SCORE: %d\n", self->getName().c_str(), arg0, score );
 }
 
-void CGstSpeechRecognizer::resultHandler(GstElement *object, gchararray arg0, gchararray arg1, gpointer data)
+void CGstSpeechRecognizer::resultHandler(GstElement *object, gchararray arg0, gchararray arg1, gint score, gpointer data)
 {
     CGstSpeechRecognizer *self = ( CGstSpeechRecognizer * ) data;
-    g_print ( "\n%s->Result: %s\n", self->getName().c_str(), arg0 );
+    g_print ( "\n%s->Result: %s; SCORE: %d\n", self->getName().c_str(), arg0, score );
 }

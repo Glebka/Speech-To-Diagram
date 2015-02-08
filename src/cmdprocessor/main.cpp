@@ -13,6 +13,7 @@
 #include "CGstTee.hpp"
 #include "CGstQueue.hpp"
 #include "CGstValve.hpp"
+#include "CGstWavenc.hpp"
 
 
 
@@ -170,14 +171,15 @@ int main ( int argc, char *argv[] )
     CGstVoiceActivityDetector vader;
     vader.setAutoThreshold( true );
 
-    /*CGstSpeechRecognizer recognizer;
-    rec = &recognizer;
+    CGstWavenc wavenc;
+    //CGstSpeechRecognizer recognizer;
+    //rec = &recognizer;
 
-    recognizer.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
-    recognizer.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
-    recognizer.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION );
+    //recognizer.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
+    //recognizer.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME ".dic" );
+    //recognizer.setLanguageModelFilePath( PROJECT_LANG_DATA_DIR "/" PROJECT_LM_DIR_NAME "/" PROJECT_LM_DIR_NAME PROJECT_LM_FILE_EXTENSION );
 
-    CGstSpeechRecognizer recognizer2;
+    /*CGstSpeechRecognizer recognizer2;
 
     recognizer2.setAcousticModelDirectoryPath( PROJECT_ACOUSTIC_DATA_DIR );
     recognizer2.setDictionaryFilePath( PROJECT_LANG_DATA_DIR "/" "sw" "/" "sw" ".dic" );
@@ -199,6 +201,7 @@ int main ( int argc, char *argv[] )
     pipeline.addElement( &resampler );
     //pipeline.addElement( &valve );
     pipeline.addElement( &vader );
+    pipeline.addElement( &wavenc );
     pipeline.addElement( &sink2 );
     //pipeline.addElement( &tee );
 
