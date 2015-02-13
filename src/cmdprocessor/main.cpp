@@ -14,6 +14,7 @@
 #include "CGstQueue.hpp"
 #include "CGstValve.hpp"
 #include "CGstWavenc.hpp"
+#include "CGstGoogleSpeech.hpp"
 
 
 
@@ -171,7 +172,10 @@ int main ( int argc, char *argv[] )
     CGstVoiceActivityDetector vader;
     vader.setAutoThreshold( true );
 
-    CGstWavenc wavenc;
+    CGstGoogleSpeech googSpeech;
+    googSpeech.setApp( "chromium" );
+    googSpeech.setKey( "KEY" );
+    googSpeech.setLang( "en-us" );
     //CGstSpeechRecognizer recognizer;
     //rec = &recognizer;
 
@@ -201,7 +205,8 @@ int main ( int argc, char *argv[] )
     pipeline.addElement( &resampler );
     //pipeline.addElement( &valve );
     pipeline.addElement( &vader );
-    pipeline.addElement( &wavenc );
+    //pipeline.addElement( &wavenc );
+    pipeline.addElement( &googSpeech );
     pipeline.addElement( &sink2 );
     //pipeline.addElement( &tee );
 

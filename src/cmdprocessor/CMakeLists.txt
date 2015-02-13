@@ -52,6 +52,7 @@ set(project_headers
     CGstQueue.hpp
     CGstValve.hpp
     CGstWavenc.hpp
+    CGstGoogleSpeech.hpp
 )
 
 set(project_sources
@@ -71,6 +72,7 @@ set(project_sources
     CGstQueue.cpp
     CGstValve.cpp
     CGstWavenc.cpp
+    CGstGoogleSpeech.cpp
     main.cpp
 
 )
