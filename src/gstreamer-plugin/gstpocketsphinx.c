@@ -47,6 +47,7 @@
 
 #include "gstpocketsphinx.h"
 #include "gstvader.h"
+#include "gstgooglespeech.h"
 #include "psmarshal.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_pocket_sphinx_debug);
@@ -850,7 +851,7 @@ gst_pocket_sphinx_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
  * register the element factories and other features
  */
 static gboolean
-pocketsphinx_init (GstPlugin * pocketsphinx)
+pocketsphinx_init (GstPlugin * speechrecognition)
 {
   /* debug category for fltering log messages
    *
@@ -861,10 +862,13 @@ pocketsphinx_init (GstPlugin * pocketsphinx)
   /*GST_DEBUG_CATEGORY_INIT (gst_vader_debug, "vader",
       0, "Vader");*/
   
-  if (!gst_element_register(pocketsphinx, "pocketsphinx",
+  if (!gst_element_register(speechrecognition, "pocketsphinx",
                               GST_RANK_NONE, GST_TYPE_POCKETSPHINX))
         return FALSE;
-    if (!gst_element_register(pocketsphinx, "vader",
+  if (!gst_element_register(speechrecognition, "googlespeech",
+                              GST_RANK_NONE, GST_TYPE_GOOGLESPEECH))
+        return FALSE;
+  if (!gst_element_register(speechrecognition, "vader",
                               GST_RANK_NONE, GST_TYPE_VADER))
         return FALSE;
     
@@ -877,7 +881,7 @@ pocketsphinx_init (GstPlugin * pocketsphinx)
  * compile this code. GST_PLUGIN_DEFINE needs PACKAGE to be defined.
  */
 #ifndef PACKAGE
-#define PACKAGE "pocketsphinx"
+#define PACKAGE "speechrecognition"
 #endif
 
 /* gstreamer looks for this structure to register pocketsphinxs
@@ -886,8 +890,8 @@ pocketsphinx_init (GstPlugin * pocketsphinx)
  */
 GST_PLUGIN_DEFINE(GST_VERSION_MAJOR,
                   GST_VERSION_MINOR,
-                  pocketsphinx,
-                  "PocketSphinx plugin",
+                  speechrecognition,
+                  "Speech recognition plugin",
                   pocketsphinx_init, VERSION,
 #if (GST_VERSION_MINOR == 10 && GST_VERSION_MICRO < 15) /* Nokia's bogus old GStreamer */
                   "LGPL",

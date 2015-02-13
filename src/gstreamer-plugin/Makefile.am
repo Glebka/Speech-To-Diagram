@@ -3,7 +3,7 @@
 ##############################################################################
 # TODO: change libgstplugin.la to something else, e.g. libmysomething.la     #
 ##############################################################################
-plugin_LTLIBRARIES = libgstpocketsphinx.la
+plugin_LTLIBRARIES = libgstspeechrecognition.la
 
 ##############################################################################
 # TODO: for the next set of variables, name the prefix if you named the .la, #
@@ -14,18 +14,19 @@ plugin_LTLIBRARIES = libgstpocketsphinx.la
 ##############################################################################
 
 # sources used to compile this plug-in
-libgstpocketsphinx_la_SOURCES = gstpocketsphinx.c gstpocketsphinx.h psmarshal.h psmarshal.c gstvader.c gstvader.h
+libgstspeechrecognition_la_SOURCES = gstpocketsphinx.c gstpocketsphinx.h psmarshal.h psmarshal.c gstvader.c gstvader.h gstgooglespeech.c gstgooglespeech.h googmarshal.h googmarshal.c
+#gstgooglespeech.c gstgooglespeech.h
 
 # compiler and linker flags used to compile this plugin, set in configure.ac
-libgstpocketsphinx_la_CFLAGS = $(GST_CFLAGS)
-libgstpocketsphinx_la_LIBADD = $(GST_LIBS) -lgstaudio-1.0 -lsphinxbase -lpocketsphinx
-libgstpocketsphinx_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstpocketsphinx_la_LIBTOOLFLAGS = --tag=disable-static
+libgstspeechrecognition_la_CFLAGS = $(GST_CFLAGS)
+libgstspeechrecognition_la_LIBADD = $(GST_LIBS) -lgstaudio-1.0 -lsphinxbase -lpocketsphinx -lcurl
+libgstspeechrecognition_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstspeechrecognition_la_LIBTOOLFLAGS = --tag=disable-static
 
 INCLUDES = -I/usr/include/sphinxbase -I/usr/include/pocketsphinx
 
 # headers we need but don't want installed
-noinst_HEADERS = gstpocketsphinx.h psmarshal.h gstvader.h
+noinst_HEADERS = gstpocketsphinx.h psmarshal.h gstvader.h gstgooglespeech.h googmarshal.h
 
 psmarshal.h: psmarshal.list
 	glib-genmarshal --header --prefix=ps_marshal $(srcdir)/psmarshal.list > psmarshal.h.tmp
@@ -36,3 +37,13 @@ psmarshal.c: psmarshal.list
 	echo "#include \"psmarshal.h\"" >> psmarshal.c.tmp
 	glib-genmarshal --body --prefix=ps_marshal $(srcdir)/psmarshal.list >> psmarshal.c.tmp
 	mv psmarshal.c.tmp psmarshal.c
+
+googmarshal.h: googmarshal.list
+	glib-genmarshal --header --prefix=goog_marshal $(srcdir)/googmarshal.list > googmarshal.h.tmp
+	mv googmarshal.h.tmp googmarshal.h
+
+googmarshal.c: googmarshal.list
+	echo "#include \"glib-object.h\"" >> googmarshal.c.tmp
+	echo "#include \"googmarshal.h\"" >> googmarshal.c.tmp
+	glib-genmarshal --body --prefix=goog_marshal $(srcdir)/googmarshal.list >> googmarshal.c.tmp
+	mv googmarshal.c.tmp googmarshal.c

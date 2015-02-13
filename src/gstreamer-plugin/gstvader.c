@@ -48,8 +48,8 @@
 #include "gstvader.h"
 #include "math.h"
 
-GST_DEBUG_CATEGORY_STATIC (gst_vader_debug);
-#define GST_CAT_DEFAULT gst_vader_debug
+/*GST_DEBUG_CATEGORY_STATIC (gst_vader_debug);
+#define GST_CAT_DEFAULT gst_vader_debug*/
 
 /* Filter signals and args */
 enum
@@ -162,12 +162,12 @@ gst_vader_class_init (GstVaderClass * klass)
         (G_OBJECT_CLASS(klass), PROP_RUN_LENGTH,
          g_param_spec_uint64("run-length", "Run length",
                              "Length of drop below threshold before cut_stop (in nanoseconds)",
-                             0, G_MAXUINT64, (guint64)(0.5 * GST_SECOND), G_PARAM_READWRITE));
+                             0, G_MAXUINT64, (guint64)(GST_SECOND), G_PARAM_READWRITE));
     g_object_class_install_property
         (G_OBJECT_CLASS(klass), PROP_PRE_LENGTH,
          g_param_spec_uint64("pre-length", "Pre-recording buffer length",
                              "Length of pre-recording buffer (in nanoseconds)",
-                             0, G_MAXUINT64, (guint64)(0.5 * GST_SECOND), G_PARAM_READWRITE));
+                             0, G_MAXUINT64, (guint64)(GST_SECOND), G_PARAM_READWRITE));
     g_object_class_install_property
         (G_OBJECT_CLASS(klass), PROP_SILENT,
          g_param_spec_boolean("silent", "Silent",
