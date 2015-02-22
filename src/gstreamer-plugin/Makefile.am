@@ -19,11 +19,11 @@ libgstspeechrecognition_la_SOURCES = gstpocketsphinx.c gstpocketsphinx.h psmarsh
 
 # compiler and linker flags used to compile this plugin, set in configure.ac
 libgstspeechrecognition_la_CFLAGS = $(GST_CFLAGS)
-libgstspeechrecognition_la_LIBADD = $(GST_LIBS) -lgstaudio-1.0 -lsphinxbase -lpocketsphinx -lcurl
+libgstspeechrecognition_la_LIBADD = $(GST_LIBS) -lgstaudio-1.0 -lsphinxbase -lpocketsphinx -lcurl -ljson-glib-1.0
 libgstspeechrecognition_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstspeechrecognition_la_LIBTOOLFLAGS = --tag=disable-static
 
-INCLUDES = -I/usr/include/sphinxbase -I/usr/include/pocketsphinx
+INCLUDES = -I/usr/include/sphinxbase -I/usr/include/pocketsphinx -I/usr/include/json-glib-1.0
 
 # headers we need but don't want installed
 noinst_HEADERS = gstpocketsphinx.h psmarshal.h gstvader.h gstgooglespeech.h googmarshal.h

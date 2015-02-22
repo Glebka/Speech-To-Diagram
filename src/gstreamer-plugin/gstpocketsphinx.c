@@ -892,7 +892,7 @@ GST_PLUGIN_DEFINE(GST_VERSION_MAJOR,
                   GST_VERSION_MINOR,
                   speechrecognition,
                   "Speech recognition plugin",
-                  pocketsphinx_init, VERSION,
+                  pocketsphinx_init, "1.0.0",
 #if (GST_VERSION_MINOR == 10 && GST_VERSION_MICRO < 15) /* Nokia's bogus old GStreamer */
                   "LGPL",
 #else

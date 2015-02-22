@@ -2,8 +2,8 @@
  * GStreamer
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
- * Copyright (C) 2015  <<user@hostname.org>>
- * 
+ * Copyright (C) 2015 Hlieb Romanov <rgewebppc at gmail.com>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -53,57 +53,58 @@ G_BEGIN_DECLS
 
 /* #defines don't like whitespacey bits */
 #define GST_TYPE_GOOGLESPEECH \
-  (gst_google_speech_get_type())
+   (gst_google_speech_get_type())
 #define GST_GOOGLESPEECH(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_GOOGLESPEECH,GstGoogleSpeech))
+   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_GOOGLESPEECH,GstGoogleSpeech))
 #define GST_GOOGLESPEECH_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_GOOGLESPEECH,GstGoogleSpeechClass))
+   (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_GOOGLESPEECH,GstGoogleSpeechClass))
 #define GST_IS_GOOGLESPEECH(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_GOOGLESPEECH))
+   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_GOOGLESPEECH))
 #define GST_IS_GOOGLESPEECH_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_GOOGLESPEECH))
+   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_GOOGLESPEECH))
 
 typedef struct _GstGoogleSpeech      GstGoogleSpeech;
 typedef struct _GstGoogleSpeechClass GstGoogleSpeechClass;
 
 struct _GstGoogleSpeech
 {
-  GstElement element;
+   GstElement element;
 
-  GstPad *sinkpad, *srcpad;
-  gchar* key;
-  gchar* lang;
-  gchar* app;
-  gboolean listening;
-  GstBuffer* buffer;
+   GstPad *sinkpad, *srcpad;
+   gchar* key;
+   gchar* lang;
+   gchar* app;
+   gboolean listening;
+   GstBuffer* buffer;
 };
 
 struct server_response {
-        char *data;
-        int length;
+   char *data;
+   int length;
+   long status;
 };
 
 struct sprec_wav_header {
-        char RIFF_marker[4];
-        uint32_t file_size;
-        char filetype_header[4];
-        char format_marker[4];
-        uint32_t data_header_length;
-        uint16_t format_type;
-        uint16_t number_of_channels;
-        uint32_t sample_rate;
-        uint32_t bytes_per_second;
-        uint16_t bytes_per_frame;
-        uint16_t bits_per_sample;
-        char data_marker[4];
-        uint32_t data_size;
+   char RIFF_marker[4];
+   uint32_t file_size;
+   char filetype_header[4];
+   char format_marker[4];
+   uint32_t data_header_length;
+   uint16_t format_type;
+   uint16_t number_of_channels;
+   uint32_t sample_rate;
+   uint32_t bytes_per_second;
+   uint16_t bytes_per_frame;
+   uint16_t bits_per_sample;
+   char data_marker[4];
+   uint32_t data_size;
 };
 
 struct _GstGoogleSpeechClass 
 {
-  GstElementClass parent_class;
-  void (*error)  (GstElement *element, gint errorCode, const gchar *errorString);
-  void (*result) (GstElement *element, const gchar *hyp_str);
+   GstElementClass parent_class;
+   void (*error)  (GstElement *element, gint errorCode, const gchar *errorString);
+   void (*result) (GstElement *element, const gchar *hyp_str);
 };
 
 GType gst_google_speech_get_type (void);
