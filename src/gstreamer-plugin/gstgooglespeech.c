@@ -436,6 +436,46 @@ static struct sprec_wav_header *sprec_wav_header_from_params(uint32_t sample_rat
    return hdr;
 }
 
+//OVER SOUL ft. GRAMMA FUNK - Universal Unfolding
+
+int strupp(char *s) {
+    int i;
+    for (i = 0; i < strlen(s); i++)
+        s[i] = toupper(s[i]);
+    return i;
+}
+
+static GstEvent *
+gst_google_speech_event_new( GstGoogleSpeech *c,
+                             GstEventType type,
+                             GstClockTime timestamp,
+                             const gchar* transcript )
+{
+    GstEvent *e;
+    GstStructure* feedback
+          = gst_structure_new ( "feedback",
+                                "transcript", G_TYPE_STRING, transcript,
+                                NULL
+                              );
+    gchar* transcriptDup = g_strdup( transcript );
+    strupp( transcriptDup );
+    gchar* ptr = strtok( transcriptDup, " " );
+    int words = 0;
+    char index[10];
+    while ( ptr != NULL )
+    {
+       sprintf( index, "w%d", words );
+       gst_structure_set( feedback, index, G_TYPE_STRING, ptr, NULL );
+       ++words;
+       ptr = strtok( NULL, " " );
+    }
+    gst_structure_set( feedback, "count", G_TYPE_UINT, words, NULL );
+    e = gst_event_new_custom(type, feedback);
+    GST_EVENT_TIMESTAMP(e) = timestamp;
+
+    return e;
+}
+
 struct WorkerContext
 {
    GstGoogleSpeech *filter;

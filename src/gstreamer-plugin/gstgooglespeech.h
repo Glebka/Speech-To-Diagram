@@ -63,6 +63,10 @@ G_BEGIN_DECLS
 #define GST_IS_GOOGLESPEECH_CLASS(klass) \
    (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_GOOGLESPEECH))
 
+#define GST_EVENT_FEEDBACK                                            \
+    GST_EVENT_MAKE_TYPE(148, GST_EVENT_TYPE_UPSTREAM | GST_EVENT_TYPE_SERIALIZED)
+
+
 typedef struct _GstGoogleSpeech      GstGoogleSpeech;
 typedef struct _GstGoogleSpeechClass GstGoogleSpeechClass;
 
