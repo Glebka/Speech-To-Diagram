@@ -48,6 +48,7 @@
 
 #include <gst/gst.h>
 #include <stdint.h>
+#include <cphonetisaurus.h>
 
 G_BEGIN_DECLS
 
@@ -80,6 +81,8 @@ struct _GstGoogleSpeech
    gchar* app;
    gboolean listening;
    GstBuffer* buffer;
+   gchar* fst;
+   HPhonetisaurus* phonetisaurus;
 };
 
 struct server_response {

@@ -43,9 +43,18 @@ link_directories(
     ${CURL_LIBRARIES}
 )
 
+add_subdirectory(phoneti EXCLUDE_FROM_ALL)
+include_directories(phoneti)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/phoneti)
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Wall -Wextra -pedantic -fPIC")
+
+#link_directories(${CMAKE_CURRENT_BINARY_DIR}/phoneti)
+
 add_library( gstspeechrecognition SHARED ${library_sources} )
 
 target_link_libraries( gstspeechrecognition
+    phonetisaurus -lstdc++
     ${GSTREAMER_LIBRARIES}
     ${GLIB_LIBRARIES}
     ${GLIB_GOBJECT_LIBRARIES}

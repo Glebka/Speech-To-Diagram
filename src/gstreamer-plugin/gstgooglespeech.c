@@ -77,7 +77,8 @@ enum
    PROP_0,
    PROP_KEY,
    PROP_LANG,
-   PROP_APP
+   PROP_APP,
+   PROP_G2P_FST
 };
 
 /* the capabilities of the inputs and outputs.
@@ -121,6 +122,12 @@ gst_google_speech_finalize(GObject * gobject)
    g_free( filter->key );
    g_free( filter->app );
    g_free( filter->lang );
+   g_free( filter->fst );
+   if ( filter->phonetisaurus )
+   {
+      phonetisaurus_destroy( filter->phonetisaurus );
+      filter->phonetisaurus = 0;
+   }
    GST_CALL_PARENT(G_OBJECT_CLASS, finalize,(gobject));
 }
 
@@ -135,7 +142,6 @@ gst_google_speech_class_init (GstGoogleSpeechClass * klass)
 
    gobject_class = (GObjectClass *) klass;
    gstelement_class = (GstElementClass *) klass;
-
    gobject_class->set_property = gst_google_speech_set_property;
    gobject_class->get_property = gst_google_speech_get_property;
    gobject_class->finalize = GST_DEBUG_FUNCPTR(gst_google_speech_finalize);
@@ -157,6 +163,13 @@ gst_google_speech_class_init (GstGoogleSpeechClass * klass)
           g_param_spec_string("application", "Application name",
                               "Optional application name",
                               "chrome",
+                              G_PARAM_READWRITE));
+
+   g_object_class_install_property
+         (gobject_class, PROP_G2P_FST,
+          g_param_spec_string("g2p-fst", "FST model for g2p conversion",
+                              "Path to the FST model file",
+                              NULL,
                               G_PARAM_READWRITE));
 
    gst_google_speech_signals[SIGNAL_ERROR] =
@@ -201,6 +214,8 @@ gst_google_speech_class_init (GstGoogleSpeechClass * klass)
 static void
 gst_google_speech_init (GstGoogleSpeech * filter)
 {
+   filter->phonetisaurus = 0;
+   filter->fst = 0;
    filter->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
    gst_pad_set_event_function (filter->sinkpad,
                                GST_DEBUG_FUNCPTR(gst_google_speech_sink_event));
@@ -232,6 +247,17 @@ gst_google_speech_set_property (GObject * object, guint prop_id,
    case PROP_LANG:
       filter->lang = g_value_dup_string (value);
       break;
+   case PROP_G2P_FST:
+      if ( filter->fst )
+      {
+         phonetisaurus_destroy( filter->phonetisaurus );
+         g_free( filter->fst );
+         filter->fst = 0;
+         filter->phonetisaurus = 0;
+      }
+      filter->fst = g_value_dup_string( value );
+      filter->phonetisaurus = phonetisaurus_create( filter->fst, 0, 0.6, 0.85, 0.72, 6 );
+      break;
    default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -252,6 +278,9 @@ gst_google_speech_get_property (GObject * object, guint prop_id,
       break;
    case PROP_LANG:
       g_value_set_string (value, filter->lang);
+      break;
+   case PROP_G2P_FST:
+      g_value_set_string (value, filter->fst);
       break;
    default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -466,12 +495,19 @@ gst_google_speech_event_new( GstGoogleSpeech *c,
     {
        sprintf( index, "w%d", words );
        gst_structure_set( feedback, index, G_TYPE_STRING, ptr, NULL );
+       if ( c->phonetisaurus )
+       {
+          char* phones = phonetisaurus_phonetise( c->phonetisaurus, ptr );
+          perror( phones );
+          free( phones );
+       }
        ++words;
        ptr = strtok( NULL, " " );
     }
     gst_structure_set( feedback, "count", G_TYPE_UINT, words, NULL );
     e = gst_event_new_custom(type, feedback);
     GST_EVENT_TIMESTAMP(e) = timestamp;
+    g_free( transcriptDup );
 
     return e;
 }
@@ -493,8 +529,23 @@ static void* asyncSendWorker( void* user_data )
    gst_buffer_map( wave, &mapInfo, GST_MAP_READ | GST_MAP_WRITE );
 
    struct server_response * resp = send_audio_data( filter, mapInfo );
-   g_signal_emit(filter, gst_google_speech_signals[SIGNAL_RESULT],
-                 0, g_strdup( resp->data ));
+   if ( resp->status == 200 )
+   {
+      if ( filter->phonetisaurus )
+      {
+         GstEvent *e =
+             gst_google_speech_event_new( filter, GST_EVENT_FEEDBACK, gst_clock_get_time(GST_ELEMENT_CLOCK(filter)), resp->data );
+         gst_pad_push_event( filter->sinkpad, e );
+      }
+
+      g_signal_emit(filter, gst_google_speech_signals[SIGNAL_RESULT],
+                    0, g_strdup( resp->data ));
+   }
+   else
+   {
+
+   }
+
    free_response( resp );
    gst_buffer_unref( wave );
    free( context );
